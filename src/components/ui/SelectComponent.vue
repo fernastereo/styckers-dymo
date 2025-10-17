@@ -36,7 +36,7 @@
 </script>
 
 <template>
-  <div class="space-y-2">
+  <div class="space-y-1">
     <label :htmlFor="label" class="block text-sm/6 font-medium text-gray-900">{{ label }}</label>
     <div class="grid grid-cols-1">
       <select 
