@@ -5,6 +5,8 @@
   import PlanosComponent from './ui/PlanosComponent.vue';
   import SelectComponent from './ui/SelectComponent.vue';
   import { useDymo } from '../composables/useDymo';
+  import stickerCuraduria2bq_1 from '../assets/styckers/curaduria2bq_1.xml?url';
+  import stickerCuraduria2bq_2 from '../assets/styckers/curaduria2bq_2.xml?url';
 
   const { isDymoLoaded, initializeDymo, printers, error } = toRefs(useDymo());
 
@@ -26,6 +28,10 @@
     otrosPlanos: { checked: false, numeroPlanos: 0, descripcion: '' },
     incluirFirmaIngeniero: false,
   });
+
+  // Variables reactivas para almacenar las imágenes generadas
+  const previewImage1 = ref('');
+  const previewImage2 = ref('');
 
   // Lista de profesionales
   const arquitectos = [
@@ -55,12 +61,46 @@
       toast.error("Error al inicializar DYMO");
     }
 
-    console.log('isDymoLoaded', isDymoLoaded.value);
     if (!isDymoLoaded.value) {
       toast.error("Dymo no está cargado");
       return;
     }
+
+    await generateSticker(stickerCuraduria2bq_1, 1)
+    await generateSticker(stickerCuraduria2bq_2, 2)
   });
+
+  const generateSticker = async (stickerXmlUrl, imageIndex = 1) => {
+    console.log('generateSticker');
+    try {
+      const response = await fetch(stickerXmlUrl);
+      const xmlContent = await response.text();
+      const label = dymo.label.framework.openLabelXml(xmlContent);
+      console.log('label', label);
+      updatePreview(label, imageIndex);
+    } catch (error) {
+      console.error('Error loading sticker XML:', error);
+      toast.error('Error al cargar el sticker');
+    }
+  }
+
+  const updatePreview = (label, imageIndex = 1) => {
+    if (!label)
+        return;
+
+    const pngData = label.render();
+    
+    const imageData = "data:image/png;base64," + pngData;
+    
+    // Asignar la imagen a la variable reactiva correspondiente
+    if (imageIndex === 1) {
+      previewImage1.value = imageData;
+    } else if (imageIndex === 2) {
+      previewImage2.value = imageData;
+    }
+    
+    return imageData;
+  }
 
   const getDataParams = () => {
     const urlParams = new URLSearchParams(window.location.search)
@@ -96,20 +136,8 @@
 
   }
 
-  const handleDetectPrinter = async () => {
-    console.log('isDymoLoaded', isDymoLoaded.value);
-    
-    // toast.success("Buscando impresoras disponibles...");
-    // Aquí iría la lógica de detección de impresora
-  };
-
   const handlePrint = () => {
-    window.print();
-    toast.success("Enviando a impresión...");
-  };
-
-  const handleReload = () => {
-    window.location.reload();
+    console.log('handlePrint');
   };
 </script>
 
@@ -131,26 +159,26 @@
             <form class="space-y-1">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-1">
-                  <label htmlFor="numeroRadicacion" class="block text-sm font-medium">
+                  <label htmlFor="numeroRadicacion" class="block text-xs font-medium">
                     Número de Radicación
                   </label>
                   <input 
                     id="numeroRadicacion" 
                     type="text"
                     placeholder="Ej: RAD-2024-001"
-                    class="w-full px-3 py-1.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
+                    class="w-full px-3 py-0.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
                     v-model="formData.numeroRadicacion"
                   />
                 </div>
 
                 <div class="space-y-1">
-                  <label htmlFor="fechaRadicacion" class="block text-sm font-medium">
+                  <label htmlFor="fechaRadicacion" class="block text-xs font-medium">
                     Fecha de Radicación
                   </label>
                   <input 
                     id="fechaRadicacion" 
                     type="date"
-                    class="w-full px-3 py-1.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
+                    class="w-full px-3 py-0.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
                     v-model="formData.fechaRadicacion"
                   />
                 </div>
@@ -158,67 +186,67 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-1">
-                  <label htmlFor="licencia" class="block text-sm font-medium">
+                  <label htmlFor="licencia" class="block text-xs font-medium">
                     Licencia
                   </label>
                   <input 
                     id="licencia" 
                     type="text"
                     placeholder="Número de licencia"
-                    class="w-full px-3 py-1.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
+                    class="w-full px-3 py-0.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
                     v-model="formData.licencia"
                   />
                 </div>
 
                 <div class="space-y-1">
-                  <label htmlFor="modalidad" class="block text-sm font-medium">
+                  <label htmlFor="modalidad" class="block text-xs font-medium">
                     Modalidad
                   </label>
                   <input 
                     id="modalidad" 
                     type="text"
                     placeholder="Modalidad del proyecto"
-                    class="w-full px-3 py-1.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
+                    class="w-full px-3 py-0.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
                     v-model="formData.modalidad"
                   />
                 </div>
               </div>
 
               <div class="space-y-1">
-                <label htmlFor="solicitante" class="block text-sm font-medium">
+                <label htmlFor="solicitante" class="block text-xs font-medium">
                   Solicitante
                 </label>
                 <input 
                   id="solicitante" 
                   type="text"
                   placeholder="Nombre completo del solicitante"
-                  class="w-full px-3 py-1.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
+                  class="w-full px-3 py-0.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
                   v-model="formData.solicitante"
                 />
               </div>
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="space-y-1">
-                  <label htmlFor="resolucion" class="block text-sm font-medium">
+                  <label htmlFor="resolucion" class="block text-xs font-medium">
                     Resolución
                   </label>
                   <input 
                     id="resolucion" 
                     type="text"
                     placeholder="Número de resolución"
-                    class="w-full px-3 py-1.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
+                    class="w-full px-3 py-0.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
                     v-model="formData.resolucion"
                   />
                 </div>
 
                 <div class="space-y-1">
-                  <label htmlFor="fechaResolucion" class="block text-sm font-medium">
+                  <label htmlFor="fechaResolucion" class="block text-xs font-medium">
                     Fecha de Resolución
                   </label>
                   <input 
                     id="fechaResolucion" 
                     type="date"
-                    class="w-full px-3 py-1.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
+                    class="w-full px-3 py-0.5 text-base bg-background border border-gray-300 rounded-md placeholder:text-gray-400  focus-visible:outline-indigo-600 sm:text-sm/6"
                     v-model="formData.fechaResolucion"
                   />
                 </div>
@@ -250,39 +278,12 @@
                     />
                     <label 
                       :htmlFor="incluirFirmaIngeniero"
-                      className="text-sm font-medium text-foreground cursor-pointer"
+                      className="text-xs font-medium text-foreground cursor-pointer"
                     >
                       Incluir Firma del Ingeniero
                     </label>
                   </div>
                 </div>
-              </div>
-            
-              <div class="mt-4 pt-4 border-t border-gray-300 flex flex-wrap gap-6">
-                <button 
-                  type="button"
-                  onClick={handleDetectPrinter}
-                  class="flex-1 sm:flex-none inline-flex items-center justify-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
-                >
-                  <Search class="mr-2 h-4 w-4" />
-                  Detectar Impresora
-                </button>
-                <button 
-                  type="button"
-                  onClick={handlePrint}
-                  class="flex-1 sm:flex-none inline-flex items-center justify-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
-                >
-                  <Printer class="mr-2 h-4 w-4" />
-                  Imprimir
-                </button>
-                <button 
-                  type="button"
-                  onClick={handleReload}
-                  class="flex-1 sm:flex-none inline-flex items-center justify-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
-                >
-                  <RotateCw class="mr-2 h-4 w-4" />
-                  Recargar
-                </button>
               </div>
             </form>
           </div>
@@ -292,9 +293,33 @@
       <div class="max-w-4xl mx-auto">
         <div class="bg-card rounded-lg shadow-sm border border-gray-300 p-2 sm:px-8 sm:py-4">
           <div class="mb-2">
-            <h1 class="text-xl font-bold">
-              Vista Previa
-            </h1>
+            <div class="flex justify-between items-center mb-8">
+              <h1 class="text-xl font-bold">
+                Vista Previa
+              </h1>
+              <button 
+                type="button"
+                @click="handlePrint"
+                class="flex-1 sm:flex-none inline-flex items-center justify-center rounded-md bg-indigo-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:shadow-none dark:hover:bg-indigo-400 dark:focus-visible:outline-indigo-500"
+              >
+                <Printer class="mr-2 h-4 w-4" />
+                Imprimir
+              </button>
+            </div>
+            <div class="grid mt-4 grid-cols-1 gap-6">
+              <div class="space-y-1">
+                <div id="labelImageDiv" class="h-52 border border-gray-200 rounded-lg flex items-center justify-center bg-gray-50">
+                  <img id="labelImage1" :src="previewImage1" alt="label preview" v-if="previewImage1" class="max-h-full max-w-full object-contain"/>
+                  <div v-else class="text-gray-400 text-sm">Vista previa no disponible</div>
+                </div>
+              </div>
+              <div class="space-y-1">
+                <div id="labelImageDiv" class="h-52 border border-gray-200 rounded-lg flex items-center justify-center bg-gray-50">
+                  <img id="labelImage2" :src="previewImage2" alt="label preview" v-if="previewImage2" class="max-h-full max-w-full object-contain"/>
+                  <div v-else class="text-gray-400 text-sm">Vista previa no disponible</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
