@@ -25,7 +25,6 @@
 
   // Watch para emitir cambios
   watch(selectedValue, (newValue) => {
-    console.log('selectedValue', newValue);
     emit('update:modelValue', newValue);
   });
 

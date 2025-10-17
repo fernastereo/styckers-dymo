@@ -1,9 +1,12 @@
 <script setup>
-  import { ref } from 'vue';
+  import { ref, onMounted, toRefs } from 'vue';
   import { toast } from 'vue-sonner';
   import { Search, Printer, RotateCw } from 'lucide-vue-next';
   import PlanosComponent from './ui/PlanosComponent.vue';
   import SelectComponent from './ui/SelectComponent.vue';
+  import { useDymo } from '../composables/useDymo';
+
+  const { isDymoLoaded, initializeDymo, printers, error } = toRefs(useDymo());
 
   // necesito una variable de estado que contenga todos los datos del Formulario
   const formData = ref({
@@ -41,8 +44,62 @@
     "YEIBER VIDES VIDAL"
   ];
 
-  const handleDetectPrinter = () => {
-    toast.success("Buscando impresoras disponibles...");
+  onMounted(async () => {
+    getDataParams()
+    const success = await initializeDymo.value();
+    
+    if (success) {
+      toast.success("DYMO inicializado correctamente");
+      console.log('Impresoras encontradas:', printers.value.length);
+    } else {
+      toast.error("Error al inicializar DYMO");
+    }
+
+    console.log('isDymoLoaded', isDymoLoaded.value);
+    if (!isDymoLoaded.value) {
+      toast.error("Dymo no está cargado");
+      return;
+    }
+  });
+
+  const getDataParams = () => {
+    const urlParams = new URLSearchParams(window.location.search)
+  
+    // Asignar valores del formData
+    if (urlParams.get('numeroradicacion')) {
+      formData.value.numeroRadicacion = urlParams.get('numeroradicacion')
+    }
+    if (urlParams.get('fecharadicacion')) {
+      formData.value.fechaRadicacion = urlParams.get('fecharadicacion')
+    }
+    if (urlParams.get('licencia')) {
+      formData.value.licencia = urlParams.get('licencia')
+    }
+    if (urlParams.get('modalidad')) {
+      formData.value.modalidad = urlParams.get('modalidad')
+    }
+    if (urlParams.get('solicitante')) {
+      formData.value.solicitante = decodeURIComponent(urlParams.get('solicitante'))
+    }
+    if (urlParams.get('resolucion')) {
+      formData.value.resolucion = urlParams.get('resolucion')
+    }
+    if (urlParams.get('fecharesolucion')) {
+      formData.value.fechaResolucion = urlParams.get('fecharesolucion')
+    }
+    if (urlParams.get('arquitecto')) {
+      formData.value.arquitecto = decodeURIComponent(urlParams.get('arquitecto'))
+    }
+    if (urlParams.get('ingeniero')) {
+      formData.value.ingeniero = decodeURIComponent(urlParams.get('ingeniero'))
+    }
+
+  }
+
+  const handleDetectPrinter = async () => {
+    console.log('isDymoLoaded', isDymoLoaded.value);
+    
+    // toast.success("Buscando impresoras disponibles...");
     // Aquí iría la lógica de detección de impresora
   };
 
@@ -65,8 +122,8 @@
               <h1 class="text-xl font-bold">
                 Impresión de Stickers Licencias
               </h1>
-              <span class="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 inset-ring inset-ring-green-600/20">
-                Impresora Disponible
+              <span :class="`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium inset-ring ${isDymoLoaded ? 'bg-green-50 text-green-700 inset-ring-green-600/20' : 'bg-red-50 text-red-700 inset-ring-red-600/20'}`">
+                {{ isDymoLoaded ? 'Impresora Disponible' : 'Impresora no Disponible' }}
               </span>
 
             </div>
