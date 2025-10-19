@@ -227,7 +227,7 @@
 <template>
   <div class="min-h-screen flex flex-col">
     <div class="flex gap-1 justify-center flex-1">
-      <div class="bg-background py-4 px-4 sm:px-6 lg:px-8">
+      <div class="bg-background py-1 px-4 sm:px-6 lg:px-8">
           <div class="max-w-4xl mx-auto">
             <div class="bg-card rounded-lg shadow-sm border border-gray-300 p-2 sm:px-8 sm:py-4">
               <div class="mb-2 flex justify-between items-center">
@@ -373,7 +373,7 @@
             </div>
           </div>
       </div>
-      <div class="min-w-1/3 bg-background py-4 px-4 sm:px-6 lg:px-8">
+      <div class="min-w-1/3 bg-background py-1 px-4 sm:px-6 lg:px-8">
         <div class="max-w-4xl mx-auto">
           <div class="bg-card rounded-lg shadow-sm border border-gray-300 p-2 sm:px-8 sm:py-4">
             <div class="mb-2">
@@ -412,7 +412,7 @@
     </div>
     
     <!-- Footer -->
-    <footer class="bg-gray-100 border-t border-gray-200 py-2 mt-auto">
+    <footer class="bg-gray-100 border-t border-gray-200 py-1 mt-auto">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
           <p class="text-sm text-gray-600">
@@ -426,7 +426,7 @@
               Fernando E. Cueto
             </a>
           </p>
-          <p class="text-xs text-gray-500 mt-1">
+          <p class="text-xs text-gray-500">
             <a 
               href="https://fernandocueto.com" 
               target="_blank" 
