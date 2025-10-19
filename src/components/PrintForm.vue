@@ -76,7 +76,7 @@
       const response = await fetch(stickerXmlUrl);
       const xmlContent = await response.text();
       const label = dymo.label.framework.openLabelXml(xmlContent);
-      
+
       //actualizar datos fijos del sticker
       label.setObjectText('TEXTO', "LILIA MARGARITA AMAYA NUÑEZ");
       label.setObjectText('TEXTO_1', "CURADORA URBANA N° 2 DE BARRANQUILLA");
@@ -96,8 +96,10 @@
 
       if (printOptions?.print && printOptions?.copies > 0) {
         console.log('imprimiendo');
-        label.print(printers.value[0].name);
-        console.log('imprimido');
+        const params = dymo.label.framework.createLabelWriterPrintParamsXml({Copies: printOptions?.copies})
+
+        label.print(printers.value[0].name, params);
+        console.log('impreso');
         return
       }
  
