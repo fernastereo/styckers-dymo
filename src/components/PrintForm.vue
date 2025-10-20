@@ -208,19 +208,19 @@
       generateSticker(stickerCuraduria2bq_2, "PLANOS ARQUITECTONICOS", 2, { print: true, copies: formData.value.planosArquitectonicos.numeroPlanos });
     }
     if (formData.value.planosEstructurales.checked) {
-      generateSticker(stickerCuraduria2bq_1, "PLANOS ESTRUCTURALES", 2, { print: true, copies: formData.value.planosEstructurales.numeroPlanos });
+      generateSticker(stickerCuraduria2bq_1, "PLANOS ESTRUCTURALES", 1, { print: true, copies: formData.value.planosEstructurales.numeroPlanos });
       generateSticker(stickerCuraduria2bq_2, "PLANOS ESTRUCTURALES", 2, { print: true, copies: formData.value.planosEstructurales.numeroPlanos });
     }
     if (formData.value.planosUrbanismo.checked) {
-      generateSticker(stickerCuraduria2bq_1, "PLANOS URBANISMO", 2, { print: true, copies: formData.value.planosUrbanismo.numeroPlanos });
+      generateSticker(stickerCuraduria2bq_1, "PLANOS URBANISMO", 1, { print: true, copies: formData.value.planosUrbanismo.numeroPlanos });
       generateSticker(stickerCuraduria2bq_2, "PLANOS URBANISMO", 2, { print: true, copies: formData.value.planosUrbanismo.numeroPlanos });
     }
     if (formData.value.planosSubdivision.checked) {
-      generateSticker(stickerCuraduria2bq_1, "PLANOS SUBDIVISION", 2, { print: true, copies: formData.value.planosSubdivision.numeroPlanos });
+      generateSticker(stickerCuraduria2bq_1, "PLANOS SUBDIVISION", 1, { print: true, copies: formData.value.planosSubdivision.numeroPlanos });
       generateSticker(stickerCuraduria2bq_2, "PLANOS SUBDIVISION", 2, { print: true, copies: formData.value.planosSubdivision.numeroPlanos });
     }
     if (formData.value.otrosPlanos.checked) {
-      generateSticker(stickerCuraduria2bq_1, formData.value.otrosPlanos.descripcion, 2, { print: true, copies: formData.value.otrosPlanos.numeroPlanos });
+      generateSticker(stickerCuraduria2bq_1, formData.value.otrosPlanos.descripcion, 1, { print: true, copies: formData.value.otrosPlanos.numeroPlanos });
       generateSticker(stickerCuraduria2bq_2, formData.value.otrosPlanos.descripcion, 2, { print: true, copies: formData.value.otrosPlanos.numeroPlanos });
     }
   };
