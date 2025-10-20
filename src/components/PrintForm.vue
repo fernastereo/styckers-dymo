@@ -73,6 +73,7 @@
 
   const generateSticker = async (stickerXmlUrl, tipoPlano, imageIndex = 1, printOptions) => {
     try {
+      console.log('imprimiendo Copias:', printOptions?.copies);
       const response = await fetch(stickerXmlUrl);
       const xmlContent = await response.text();
       const label = dymo.label.framework.openLabelXml(xmlContent);
@@ -94,12 +95,12 @@
         label.setObjectText('QR', "https://web-curadurias.s3-us-west-1.amazonaws.com/2bq/resol/" + formData.value.idRadicacion + ".pdf");
       }
 
-      if (printOptions?.print && printOptions?.copies > 0) {
-        console.log('imprimiendo');
-        const params = dymo.label.framework.createLabelWriterPrintParamsXml({Copies: printOptions?.copies})
+      if (printOptions?.print === true && printOptions?.copies > 0) {
+        // console.log('imprimiendo Copies xxxxx:', printOptions?.copies);
+        const params = dymo.label.framework.createLabelWriterPrintParamsXml({copies: printOptions?.copies})
 
         label.print(printers.value[0].name, params);
-        console.log('impreso');
+        // console.log('impreso');
         return
       }
  
@@ -114,7 +115,7 @@
     if (!label)
       return;
 
-    const pngData = label.render();
+      const pngData = label.render();
     
     const imageData = "data:image/png;base64," + pngData;
     
@@ -203,23 +204,29 @@
   });
 
   const handlePrint = () => {
+    console.log(formData.value)
     if (formData.value.planosArquitectonicos.checked) {
+      console.log("enviando planos arquitectonicos")
       generateSticker(stickerCuraduria2bq_1, "PLANOS ARQUITECTONICOS", 1, { print: true, copies: formData.value.planosArquitectonicos.numeroPlanos });
       generateSticker(stickerCuraduria2bq_2, "PLANOS ARQUITECTONICOS", 2, { print: true, copies: formData.value.planosArquitectonicos.numeroPlanos });
     }
     if (formData.value.planosEstructurales.checked) {
+      console.log("enviando planos estructurales")
       generateSticker(stickerCuraduria2bq_1, "PLANOS ESTRUCTURALES", 1, { print: true, copies: formData.value.planosEstructurales.numeroPlanos });
       generateSticker(stickerCuraduria2bq_2, "PLANOS ESTRUCTURALES", 2, { print: true, copies: formData.value.planosEstructurales.numeroPlanos });
     }
     if (formData.value.planosUrbanismo.checked) {
+      console.log("enviando planos urbanismo")
       generateSticker(stickerCuraduria2bq_1, "PLANOS URBANISMO", 1, { print: true, copies: formData.value.planosUrbanismo.numeroPlanos });
       generateSticker(stickerCuraduria2bq_2, "PLANOS URBANISMO", 2, { print: true, copies: formData.value.planosUrbanismo.numeroPlanos });
     }
     if (formData.value.planosSubdivision.checked) {
+      console.log("enviando planos subdivision")
       generateSticker(stickerCuraduria2bq_1, "PLANOS SUBDIVISION", 1, { print: true, copies: formData.value.planosSubdivision.numeroPlanos });
       generateSticker(stickerCuraduria2bq_2, "PLANOS SUBDIVISION", 2, { print: true, copies: formData.value.planosSubdivision.numeroPlanos });
     }
     if (formData.value.otrosPlanos.checked) {
+      console.log("enviando otros planos")
       generateSticker(stickerCuraduria2bq_1, formData.value.otrosPlanos.descripcion, 1, { print: true, copies: formData.value.otrosPlanos.numeroPlanos });
       generateSticker(stickerCuraduria2bq_2, formData.value.otrosPlanos.descripcion, 2, { print: true, copies: formData.value.otrosPlanos.numeroPlanos });
     }
@@ -356,14 +363,14 @@
                     <PlanosComponent titulo="Otros Planos" :showDescription=true v-model="formData.otrosPlanos"/>
                     <div className="flex items-center space-x-2 mt-2">
                       <input 
-                        :id="incluirFirmaIngeniero"
+                        id="incluirFirmaIngeniero"
                         type="checkbox"
                         v-model="formData.incluirFirmaIngeniero"
                         :checked="formData.incluirFirmaIngeniero"
                         className="w-4 h-4 text-primary bg-background border-gray-300 rounded focus:ring-2 focus:ring-primary cursor-pointer"
                       />
                       <label 
-                        :htmlFor="incluirFirmaIngeniero"
+                        htmlFor="incluirFirmaIngeniero"
                         className="text-xs font-medium text-foreground cursor-pointer"
                       >
                         Incluir Firma del Ingeniero
