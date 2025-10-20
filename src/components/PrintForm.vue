@@ -73,7 +73,6 @@
 
   const generateSticker = async (stickerXmlUrl, tipoPlano, imageIndex = 1, printOptions) => {
     try {
-      console.log('imprimiendo Copias:', printOptions?.copies);
       const response = await fetch(stickerXmlUrl);
       const xmlContent = await response.text();
       const label = dymo.label.framework.openLabelXml(xmlContent);
@@ -96,11 +95,10 @@
       }
 
       if (printOptions?.print === true && printOptions?.copies > 0) {
-        // console.log('imprimiendo Copies xxxxx:', printOptions?.copies);
+        console.log('imprimiendo Copies:', printOptions?.copies);
         const params = dymo.label.framework.createLabelWriterPrintParamsXml({copies: printOptions?.copies})
 
         label.print(printers.value[0].name, params);
-        // console.log('impreso');
         return
       }
  
@@ -425,7 +423,7 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center">
           <p class="text-sm text-gray-600">
-            Desarrollado por 
+            v1.1.8 - Desarrollado por 
             <a 
               href="https://fernandocueto.com" 
               target="_blank" 
